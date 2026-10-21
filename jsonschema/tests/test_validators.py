@@ -499,6 +499,25 @@ class TestValidationErrorMessages(TestCase):
             ),
         )
 
+    def test_additionalProperties_false_patternProperties_flags(self):
+        schema = {
+            "type": "object",
+            "additionalProperties": False,
+            "patternProperties": {
+                "(?i)^x-": {},
+                "^admin$": {"const": False},
+            },
+        }
+        message = self.message_for(instance={"ADMIN": True}, schema=schema)
+        self.assertEqual(
+            message,
+            "{} does not match any of the regexes: {}, {}".format(
+                repr("ADMIN"),
+                repr("(?i)^x-"),
+                repr("^admin$"),
+            ),
+        )
+
     def test_False_schema(self):
         message = self.message_for(
             instance="something",

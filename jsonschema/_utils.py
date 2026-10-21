@@ -82,10 +82,10 @@ def find_additional_properties(instance, schema):
     Assumes ``instance`` is dict-like already.
     """
     properties = schema.get("properties", {})
-    patterns = "|".join(schema.get("patternProperties", {}))
+    patterns = schema.get("patternProperties", {})
     for property in instance:
         if property not in properties:
-            if patterns and re.search(patterns, property):
+            if any(re.search(pattern, property) for pattern in patterns):
                 continue
             yield property
 
